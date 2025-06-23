@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: AImage
+  datasource:
+    url: jdbc:postgresql://localhost:5432/aimage_db
+    username: user
+    password: pass
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
