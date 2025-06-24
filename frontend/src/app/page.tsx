@@ -61,10 +61,12 @@ export default function AImageHomepage() {
     };
 
     const examplePrompts = [
-        "A majestic dragon soaring through neon-lit cyberpunk city",
-        "Serene Japanese garden with cherry blossoms at sunset",
-        "Abstract geometric patterns in vibrant cosmic colors",
-        "Steampunk robot reading a book in an ancient library",
+        "A sleepy cat astronaut floating in the galaxy",
+        "A magical coffee shop run by raccoons",
+        "Giant rubber duck parade in Times Square",
+        "An enchanted donut castle guarded by gummy bears",
+        "Pixel art wizard battling a dragon in cyberspace",
+        "A robot DJ spinning records at an underwater disco",
     ];
 
     return (

@@ -16,8 +16,16 @@ export default function ParticlesBackground() {
         <Particles
             id="tsparticles"
             init={particlesInit}
+            style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100vw",
+                height: "100vh",
+                zIndex: -1,
+                pointerEvents: "none",
+            }}
             options={{
-                fullScreen: { enable: true, zIndex: 0 },
                 particles: {
                     number: {
                         value: 60, // Slightly fewer for cleaner look
@@ -106,17 +114,13 @@ export default function ParticlesBackground() {
                             mode: ["grab", "bubble"],
                             parallax: { enable: false, force: 60, smooth: 10 },
                         },
-                        onClick: {
-                            enable: true,
-                            mode: "push", // Add particles on click
-                        },
                     },
                     modes: {
                         grab: {
                             distance: 180,
                             links: {
                                 opacity: 0.8,
-                                color: "#ec4899", // Pink grab connections
+                                color: "#ec4899",
                             },
                         },
                         bubble: {
@@ -126,16 +130,13 @@ export default function ParticlesBackground() {
                             opacity: 0.8,
                             color: "#8b5cf6",
                         },
-                        push: {
-                            quantity: 3, // Add 3 particles on click
-                        },
                     },
                 },
                 background: {
                     color: "transparent",
                 },
-                detectRetina: true, // Better quality on high-DPI screens
-                fpsLimit: 60, // Smooth performance
+                detectRetina: true,
+                fpsLimit: 60,
             }}
         />
     );
