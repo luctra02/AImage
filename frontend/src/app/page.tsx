@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -20,17 +19,45 @@ import {
 export default function AImageHomepage() {
     const [prompt, setPrompt] = useState("");
     const [isGenerating, setIsGenerating] = useState(false);
+    const [isImageLoading, setIsImageLoading] = useState(false);
     const [generatedImage, setGeneratedImage] = useState(null);
 
     const handleGenerate = async () => {
         if (!prompt.trim()) return;
 
         setIsGenerating(true);
-        // Simulate API call
-        setTimeout(() => {
-            setGeneratedImage(`https://picsum.photos/512/512?random`);
+        setGeneratedImage(null);
+        setIsImageLoading(false);
+
+        try {
+            const response = await fetch("/api/generate-image", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    prompt: prompt.trim(),
+                    dimensions: { width: 512, height: 512 },
+                }),
+            });
+
+            const data = await response.json();
+            if (!response.ok)
+                throw new Error(data.message || "Failed to generate image");
+
+            if (data.success && data.imageUrl) {
+                // Set image loading state when we get the URL
+                setIsImageLoading(true);
+                setGeneratedImage(data.imageUrl);
+            }
+        } catch (error) {
+            console.error("Generation failed:", error);
+            alert(`Generation failed: ${error.message}`);
+        } finally {
             setIsGenerating(false);
-        }, 3000);
+        }
+    };
+
+    const handleImageLoad = () => {
+        setIsImageLoading(false);
     };
 
     const examplePrompts = [
@@ -114,13 +141,22 @@ export default function AImageHomepage() {
                             {/* Generate Button */}
                             <Button
                                 onClick={handleGenerate}
-                                disabled={!prompt.trim() || isGenerating}
+                                disabled={
+                                    !prompt.trim() ||
+                                    isGenerating ||
+                                    isImageLoading
+                                }
                                 className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-3 transition-all duration-300 transform hover:scale-[1.02] disabled:scale-100 disabled:opacity-50"
                             >
                                 {isGenerating ? (
                                     <>
                                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                                         Creating your image...
+                                    </>
+                                ) : isImageLoading ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                        Loading image...
                                     </>
                                 ) : (
                                     <>
@@ -151,19 +187,42 @@ export default function AImageHomepage() {
                                                         </div>
                                                     </div>
                                                 ) : generatedImage ? (
-                                                    <Image
-                                                        width={512}
-                                                        height={512}
-                                                        src={generatedImage}
-                                                        alt="Generated artwork"
-                                                        className="w-full h-full object-cover"
-                                                    />
+                                                    <div className="relative w-full h-full">
+                                                        {/* Image Loading Overlay */}
+                                                        {isImageLoading && (
+                                                            <div className="absolute inset-0 bg-gray-800/80 flex items-center justify-center z-10">
+                                                                <div className="text-center">
+                                                                    <Loader2 className="w-8 h-8 text-purple-400 animate-spin mx-auto mb-3" />
+                                                                    <p className="text-gray-300 text-sm">
+                                                                        Loading
+                                                                        image...
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                        <Image
+                                                            width={512}
+                                                            height={512}
+                                                            src={generatedImage}
+                                                            unoptimized
+                                                            alt="Generated artwork"
+                                                            className={`w-full h-full object-cover transition-opacity duration-300 ${
+                                                                isImageLoading
+                                                                    ? "opacity-0"
+                                                                    : "opacity-100"
+                                                            }`}
+                                                            onLoad={
+                                                                handleImageLoad
+                                                            }
+                                                        />
+                                                    </div>
                                                 ) : null}
                                             </div>
 
-                                            {/* Action Buttons - Only show when image is generated */}
+                                            {/* Action Buttons - Only show when image is fully loaded */}
                                             {generatedImage &&
-                                                !isGenerating && (
+                                                !isGenerating &&
+                                                !isImageLoading && (
                                                     <div className="flex flex-col sm:flex-row gap-3">
                                                         <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-2.5 flex-1 transition-all duration-200">
                                                             <Download className="w-4 h-4 mr-2" />

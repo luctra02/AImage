@@ -13,24 +13,9 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: '**.huggingface.co',
       },
-      // Common AI image services you might use
       {
         protocol: 'https',
-        hostname: 'cdn.openai.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'replicate.delivery',
-      },
-      // AWS S3 - if you store images there later
-      {
-        protocol: 'https',
-        hostname: '**.amazonaws.com',
-      },
-      // Vercel blob storage - good option for Vercel deployments
-      {
-        protocol: 'https',
-        hostname: '**.public.blob.vercel-storage.com',
+        hostname: 'image.pollinations.ai',
       },
     ],
   },
