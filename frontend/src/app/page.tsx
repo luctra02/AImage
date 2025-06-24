@@ -76,7 +76,7 @@ export default function AImageHomepage() {
                         <div className="bg-gradient-to-r from-purple-400 to-pink-400 p-3 rounded-full mr-3">
                             <Sparkles className="w-8 h-8 text-white" />
                         </div>
-                        <h1 className="text-5xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
+                        <h1 className="text-5xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent leading-tight pb-1">
                             AImage
                         </h1>
                     </div>
