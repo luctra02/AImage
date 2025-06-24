@@ -39,23 +39,50 @@ export default function LoginPage() {
         setIsLoading(true);
 
         try {
-            const endpoint = isSignup ? "/api/auth/signup" : "/api/auth/login";
+            // Select correct endpoint
+            const endpoint = isSignup
+                ? "http://localhost:8080/api/auth/signup"
+                : "http://localhost:8080/api/auth/login";
+
+            // Build payload
             const payload = isSignup
-                ? formData
-                : { email: formData.email, password: formData.password };
+                ? {
+                      name: formData.name,
+                      email: formData.email,
+                      password: formData.password,
+                      confirmPassword: formData.confirmPassword,
+                  }
+                : {
+                      email: formData.email,
+                      password: formData.password,
+                  };
 
-            // Replace with your actual API call
-            // const response = await fetch(endpoint, {
-            //     method: "POST",
-            //     headers: { "Content-Type": "application/json" },
-            //     body: JSON.stringify(payload),
-            // });
+            // Call your Spring Boot API
+            const response = await fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
 
-            // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Error:", errorData.message || "Unknown error");
+                // Optionally show an error toast here
+                return;
+            }
 
-            // Handle success - redirect to dashboard or home
+            const data = await response.json();
+
+            // If login: Save JWT token (example in localStorage)
+            if (!isSignup && data.token) {
+                localStorage.setItem("token", data.token);
+                console.log("JWT Token:", data.token);
+            }
+
             console.log(`${isSignup ? "Signup" : "Login"} successful`);
+
+            // Redirect to dashboard or home page
+            window.location.href = "/";
         } catch (error) {
             console.error("Authentication failed:", error);
         } finally {
