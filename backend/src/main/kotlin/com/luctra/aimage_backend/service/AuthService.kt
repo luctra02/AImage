@@ -3,13 +3,15 @@ package com.luctra.aimage_backend.service
 import com.luctra.aimage_backend.model.User
 import com.luctra.aimage_backend.repository.UserRepository
 import com.luctra.aimage_backend.controller.AuthController
+import com.luctra.aimage_backend.security.JwtService
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
 class AuthService(
     private val userRepository: UserRepository,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val jwtService: JwtService
 ) {
     fun signup(request: AuthController.SignupRequest): Map<String, String> {
         if (userRepository.findByEmail(request.email) != null) {
@@ -26,5 +28,21 @@ class AuthService(
         userRepository.save(user)
 
         return mapOf("message" to "Signup successful")
+    }
+
+    fun login(email: String, password: String): Map<String, String> {
+        val user = userRepository.findByEmail(email)
+            ?: return mapOf("error" to "Invalid credentials")
+
+        if (!passwordEncoder.matches(password, user.password)) {
+            return mapOf("error" to "Invalid credentials")
+        }
+
+        val token = jwtService.generateToken(email)
+
+        return mapOf(
+            "message" to "Login successful",
+            "token" to token
+        )
     }
 }
