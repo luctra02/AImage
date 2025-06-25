@@ -5,20 +5,28 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.web.SecurityFilterChain
-
+import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfig {
+class SecurityConfig(
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter
+) {
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
-            .csrf { it.disable() } // You can re-enable with tokens later
+            .csrf { it.disable() }
             .authorizeHttpRequests {
-                it.requestMatchers("/api/auth/**").permitAll() // ✅ Allow login/signup
-                it.anyRequest().authenticated() // All other requests require login
+                it.requestMatchers("/api/auth/**").permitAll()
+                it.requestMatchers("/api/user/**").authenticated() 
+                it.anyRequest().authenticated()
             }
+            .sessionManagement {
+                it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No sessions
+            }
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
 
         return http.build()
     }

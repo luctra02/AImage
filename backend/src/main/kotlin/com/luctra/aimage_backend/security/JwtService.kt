@@ -2,6 +2,7 @@ package com.luctra.aimage_backend.security
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.auth0.jwt.exceptions.JWTVerificationException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.util.*
@@ -25,12 +26,22 @@ class JwtService (
             .sign(algorithm)
     }
 
-    fun validateToken(token: String): String? {
+    fun validateToken(token: String): Boolean {
+        return try {
+            val verifier = JWT.require(algorithm).build()
+            verifier.verify(token)
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    fun extractEmail(token: String): String? {
         return try {
             val verifier = JWT.require(algorithm).build()
             val decodedJWT = verifier.verify(token)
             decodedJWT.subject
-        } catch (e: Exception) {
+        } catch (e: JWTVerificationException) {
             null
         }
     }

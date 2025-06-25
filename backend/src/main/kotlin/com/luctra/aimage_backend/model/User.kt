@@ -15,5 +15,7 @@ data class User(
     @Column(nullable = false)
     val password: String,
 
-    val name: String? = null
+    val name: String? = null,
+
+    val profilePicture: String? = null
 )
