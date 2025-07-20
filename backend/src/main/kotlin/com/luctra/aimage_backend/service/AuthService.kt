@@ -30,19 +30,14 @@ class AuthService(
         return mapOf("message" to "Signup successful")
     }
 
-    fun login(email: String, password: String): Map<String, String> {
+    fun login(email: String, password: String): String {
         val user = userRepository.findByEmail(email)
-            ?: return mapOf("error" to "Invalid credentials")
+            ?: throw IllegalArgumentException("Invalid credentials")
 
         if (!passwordEncoder.matches(password, user.password)) {
-            return mapOf("error" to "Invalid credentials")
+            throw IllegalArgumentException("Invalid credentials")
         }
 
-        val token = jwtService.generateToken(email)
-
-        return mapOf(
-            "message" to "Login successful",
-            "token" to token
-        )
+        return jwtService.generateToken(email)
     }
 }

@@ -23,7 +23,10 @@ class JwtAuthFilter(
         filterChain: FilterChain
     ) {
         val authHeader = request.getHeader("Authorization")
-        val jwt = authHeader?.takeIf { it.startsWith("Bearer ") }?.substring(7)
+        val jwt = when {
+            authHeader != null && authHeader.startsWith("Bearer ") -> authHeader.substring(7)
+            else -> request.cookies?.firstOrNull { it.name == "jwt" }?.value
+        }
 
         if (jwt != null && SecurityContextHolder.getContext().authentication == null) {
             val email = jwtService.extractEmail(jwt)
