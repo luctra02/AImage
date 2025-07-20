@@ -62,6 +62,7 @@ export default function LoginPage() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
+                credentials: "include", // Send cookies with request
             });
 
             if (!response.ok) {
@@ -71,13 +72,14 @@ export default function LoginPage() {
                 return;
             }
 
-            const data = await response.json();
-
-            // If login: Save JWT token (example in localStorage)
-            if (!isSignup && data.token) {
-                localStorage.setItem("token", data.token);
-                console.log("JWT Token:", data.token);
+            // No need to parse response JSON for login, as we don't use the data
+            if (!isSignup) {
+                // For login, just redirect after success
+                window.location.href = "/";
+                return;
             }
+            // For signup, still parse the response for error handling or messages
+            // const data = await response.json();
 
             console.log(`${isSignup ? "Signup" : "Login"} successful`);
 
