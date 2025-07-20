@@ -15,6 +15,19 @@ import {
     Loader2,
     Sparkles,
 } from "lucide-react";
+import { z } from "zod";
+
+const signupSchema = z
+    .object({
+        name: z.string().min(1, "Name is required."),
+        email: z.string().email("Please enter a valid email address."),
+        password: z.string().min(6, "Password must be at least 6 characters."),
+        confirmPassword: z.string(),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+        message: "Passwords do not match.",
+        path: ["confirmPassword"],
+    });
 
 export default function LoginPage() {
     const [isSignup, setIsSignup] = useState(false);
@@ -26,6 +39,7 @@ export default function LoginPage() {
         password: "",
         confirmPassword: "",
     });
+    const [error, setError] = useState<string | null>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
@@ -37,6 +51,16 @@ export default function LoginPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
+
+        // Frontend validation for signup using zod
+        if (isSignup) {
+            const result = signupSchema.safeParse(formData);
+            if (!result.success) {
+                setError(result.error.issues[0]?.message || "Invalid input.");
+                setIsLoading(false);
+                return;
+            }
+        }
 
         try {
             // Select correct endpoint
@@ -66,13 +90,18 @@ export default function LoginPage() {
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Error:", errorData.message || "Unknown error");
-                // Optionally show an error toast here
+                // Try to get error message from backend, fallback to generic
+                let errorMsg = "Login failed. Please try again.";
+                try {
+                    const errorData = await response.text();
+                    errorMsg = errorData || errorMsg;
+                } catch {}
+                setError(errorMsg);
+                setIsLoading(false);
                 return;
             }
+            setError(null); // Clear error on success
 
-            // No need to parse response JSON for login, as we don't use the data
             if (!isSignup) {
                 // For login, just redirect after success
                 window.location.href = "/";
@@ -86,6 +115,7 @@ export default function LoginPage() {
             // Redirect to dashboard or home page
             window.location.href = "/";
         } catch (error) {
+            setError("Network error. Please try again.");
             console.error("Authentication failed:", error);
         } finally {
             setIsLoading(false);
@@ -156,6 +186,11 @@ export default function LoginPage() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
+                        {error && (
+                            <div className="mb-4 text-red-500 text-center font-semibold">
+                                {error}
+                            </div>
+                        )}
                         <form onSubmit={handleSubmit} className="space-y-4">
                             {/* Name Field (Signup only) */}
                             {isSignup && (
