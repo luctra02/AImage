@@ -17,5 +17,8 @@ data class User(
 
     val name: String? = null,
 
-    val profilePicture: String? = null
+    val profilePicture: String? = null,
+
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    val likedImages: List<LikedImage> = emptyList()
 )
