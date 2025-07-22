@@ -40,4 +40,10 @@ class AuthService(
 
         return jwtService.generateToken(email)
     }
+
+    fun updateProfilePicture(user: User, profilePictureUrl: String): User {
+        val updatedUser = user.copy(profilePicture = profilePictureUrl)
+        userRepository.save(updatedUser)
+        return updatedUser
+    }
 }

@@ -7,6 +7,9 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import com.luctra.aimage_backend.service.AuthService
 
 data class UserProfileResponse(
     val email: String,
@@ -17,7 +20,8 @@ data class UserProfileResponse(
 @RestController
 @RequestMapping("/api/user")
 class UserController(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val authService: AuthService
 ) {
 
     @GetMapping("/profile")
@@ -30,5 +34,19 @@ class UserController(
             name = user.name,
             profilePicture = user.profilePicture
         )
+    }
+
+    data class ProfilePictureRequest(val profilePictureUrl: String)
+    data class ProfilePictureResponse(val profilePictureUrl: String)
+
+    @PutMapping("/profile-picture")
+    fun updateProfilePicture(
+        @AuthenticationPrincipal principal: UserDetails,
+        @RequestBody request: ProfilePictureRequest
+    ): ProfilePictureResponse {
+        val user: User = userRepository.findByEmail(principal.username)
+            ?: throw RuntimeException("User not found")
+        val updatedUser = authService.updateProfilePicture(user, request.profilePictureUrl)
+        return ProfilePictureResponse(profilePictureUrl = updatedUser.profilePicture ?: "")
     }
 }
