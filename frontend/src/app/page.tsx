@@ -6,15 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-    Loader2,
-    Sparkles,
-    ImageIcon,
-    Wand2,
-    Download,
-    Heart,
-    Zap,
-} from "lucide-react";
+import { Loader2, Sparkles, ImageIcon, Wand2, Heart, Zap } from "lucide-react";
+import ImageActionBar from "@/components/ImageActionBar";
 
 export default function AImageHomepage() {
     const [prompt, setPrompt] = useState("");
@@ -48,9 +41,13 @@ export default function AImageHomepage() {
                 setIsImageLoading(true);
                 setGeneratedImage(data.imageUrl);
             }
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Generation failed:", error);
-            alert(`Generation failed: ${error.message}`);
+            let message = "Unknown error";
+            if (error instanceof Error) {
+                message = error.message;
+            }
+            alert(`Generation failed: ${message}`);
         } finally {
             setIsGenerating(false);
         }
@@ -225,19 +222,12 @@ export default function AImageHomepage() {
                                             {generatedImage &&
                                                 !isGenerating &&
                                                 !isImageLoading && (
-                                                    <div className="flex flex-col sm:flex-row gap-3">
-                                                        <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-2.5 flex-1 transition-all duration-200">
-                                                            <Download className="w-4 h-4 mr-2" />
-                                                            Save Image
-                                                        </Button>
-                                                        <Button
-                                                            variant="outline"
-                                                            className="border-white/30 text-white bg-white/10 hover:bg-white/20 hover:text-white font-medium py-2.5 flex-1 transition-all duration-200"
-                                                        >
-                                                            <Heart className="w-4 h-4 mr-2" />
-                                                            Like
-                                                        </Button>
-                                                    </div>
+                                                    <ImageActionBar
+                                                        imageUrl={
+                                                            generatedImage
+                                                        }
+                                                        initialLiked={false}
+                                                    />
                                                 )}
                                         </div>
                                     </CardContent>

@@ -63,10 +63,12 @@ export default function LoginPage() {
         }
 
         try {
+            const apiUrl =
+                process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
             // Select correct endpoint
             const endpoint = isSignup
-                ? "http://localhost:8080/api/auth/signup"
-                : "http://localhost:8080/api/auth/login";
+                ? `${apiUrl}/api/auth/signup`
+                : `${apiUrl}/api/auth/login`;
 
             // Build payload
             const payload = isSignup
