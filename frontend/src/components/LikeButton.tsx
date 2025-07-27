@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Heart, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface LikeButtonProps {
     imageUrl: string;
@@ -31,18 +32,25 @@ export default function LikeButton({
                 credentials: "include",
                 body: JSON.stringify({ imageUrl }),
             });
+            if (response.status === 401 || response.status === 403) {
+                toast.error("You must be logged in to like images.");
+                setLoading(false);
+                return;
+            }
             if (!response.ok) {
                 const data = await response.json();
                 throw new Error(data.message || "Failed to update like status");
             }
             setLiked(!liked);
             onLikeChange?.(!liked);
+            toast.success(liked ? "Image unliked." : "Image liked!");
         } catch (err: unknown) {
             let message = "Unknown error";
             if (err instanceof Error) {
                 message = err.message;
             }
             setError(message);
+            toast.error(message);
         } finally {
             setLoading(false);
         }
@@ -52,9 +60,10 @@ export default function LikeButton({
         <Button
             variant={liked ? "default" : "outline"}
             className={
-                liked
+                (liked
                     ? "border-pink-500 bg-pink-600 text-white hover:bg-pink-700 hover:border-pink-600"
-                    : "border-white/30 text-white bg-white/10 hover:bg-white/20 hover:text-white"
+                    : "border-white/30 text-white bg-white/10 hover:bg-white/20 hover:text-white") +
+                " flex-1 min-w-[160px] max-w-full"
             }
             onClick={handleLike}
             disabled={loading}

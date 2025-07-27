@@ -2,6 +2,7 @@ import { useState } from "react";
 import LikeButton from "@/components/LikeButton";
 import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
+import { toast } from "sonner";
 
 interface ImageActionBarProps {
     imageUrl: string;
@@ -33,6 +34,13 @@ export default function ImageActionBar({
                 credentials: "include",
                 body: JSON.stringify({ profilePictureUrl: imageUrl }),
             });
+            if (response.status === 401 || response.status === 403) {
+                toast.error(
+                    "You must be logged in to set your profile picture."
+                );
+                setLoading(false);
+                return;
+            }
             if (!response.ok) {
                 const data = await response.json();
                 throw new Error(
@@ -42,12 +50,14 @@ export default function ImageActionBar({
             const data = await response.json();
             setSuccess(true);
             onProfilePictureSet?.(data.profilePictureUrl);
+            toast.success("Profile picture updated!");
         } catch (err: unknown) {
             let message = "Unknown error";
             if (err instanceof Error) {
                 message = err.message;
             }
             setError(message);
+            toast.error(message);
         } finally {
             setLoading(false);
             setTimeout(() => setSuccess(false), 2000);
@@ -57,7 +67,7 @@ export default function ImageActionBar({
     return (
         <div className="flex flex-col sm:flex-row gap-3">
             <Button
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-2.5 flex-1 transition-all duration-200"
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-2.5 flex-1 min-w-[160px] max-w-full transition-all duration-200"
                 onClick={handleSetProfilePicture}
                 disabled={loading}
             >
