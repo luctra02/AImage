@@ -3,6 +3,7 @@ import LikeButton from "@/components/LikeButton";
 import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
 import { toast } from "sonner";
+import { useUserStore } from "@/lib/userStore";
 
 interface ImageActionBarProps {
     imageUrl: string;
@@ -50,6 +51,9 @@ export default function ImageActionBar({
             const data = await response.json();
             setSuccess(true);
             onProfilePictureSet?.(data.profilePictureUrl);
+            useUserStore
+                .getState()
+                .updateProfilePicture(data.profilePictureUrl);
             toast.success("Profile picture updated!");
         } catch (err: unknown) {
             let message = "Unknown error";

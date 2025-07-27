@@ -6,15 +6,11 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { LogIn, ChevronDown, LogOut } from "lucide-react";
 import ProfilePictureModal from "./ProfilePictureModal"; // Added import for ProfilePictureModal
-
-interface User {
-    name: string | null;
-    email: string;
-    profilePicture?: string | null;
-}
+import { useUserStore } from "@/lib/userStore";
 
 export default function AuthButton() {
-    const [user, setUser] = useState<User | null>(null);
+    const user = useUserStore((state) => state.user);
+    const setUser = useUserStore((state) => state.setUser);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -44,7 +40,7 @@ export default function AuthButton() {
             }
         };
         checkAuthStatus();
-    }, []);
+    }, [setUser]);
 
     // Close dropdown when clicking outside
     useEffect(() => {
