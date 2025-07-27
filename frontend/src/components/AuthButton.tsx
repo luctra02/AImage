@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { LogIn, ChevronDown, LogOut } from "lucide-react";
+import ProfilePictureModal from "./ProfilePictureModal"; // Added import for ProfilePictureModal
 
 interface User {
     name: string | null;
@@ -17,6 +18,7 @@ export default function AuthButton() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false); // Added state for ProfilePictureModal
 
     // Check auth status on mount
     useEffect(() => {
@@ -132,7 +134,7 @@ export default function AuthButton() {
                                 alt={user.name || user.email}
                                 width={32}
                                 height={32}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover cursor-pointer"
                             />
                         ) : (
                             <div className="w-full h-full bg-gradient-to-br from-purple-400 via-pink-400 to-purple-500 flex items-center justify-center">
@@ -177,7 +179,10 @@ export default function AuthButton() {
                         {/* User Info Header */}
                         <div className="px-3 py-3 bg-gradient-to-r from-purple-600/20 to-pink-600/20 border-b border-white/10">
                             <div className="flex items-center space-x-2.5">
-                                <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white/20">
+                                <div
+                                    className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white/20 cursor-pointer"
+                                    onClick={() => setIsProfileModalOpen(true)}
+                                >
                                     {user.profilePicture ? (
                                         <Image
                                             src={user.profilePicture}
@@ -229,7 +234,10 @@ export default function AuthButton() {
                         {/* User Info Header */}
                         <div className="px-3 py-3 bg-gradient-to-r from-purple-600/20 to-pink-600/20 border-b border-white/10">
                             <div className="flex items-center space-x-2.5">
-                                <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white/20">
+                                <div
+                                    className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-white/20 cursor-pointer"
+                                    onClick={() => setIsProfileModalOpen(true)}
+                                >
                                     {user.profilePicture ? (
                                         <Image
                                             src={user.profilePicture}
@@ -274,6 +282,12 @@ export default function AuthButton() {
                     </div>
                 </>
             )}
+            {/* Profile Picture Modal */}
+            <ProfilePictureModal
+                imageUrl={user.profilePicture || ""}
+                isOpen={isProfileModalOpen}
+                onClose={() => setIsProfileModalOpen(false)}
+            />
         </div>
     );
 }
