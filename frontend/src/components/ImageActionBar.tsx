@@ -69,23 +69,25 @@ export default function ImageActionBar({
     };
 
     return (
-        <div className="flex flex-col sm:flex-row gap-3">
-            <Button
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-2.5 flex-1 min-w-[160px] max-w-full transition-all duration-200"
-                onClick={handleSetProfilePicture}
-                disabled={loading}
-            >
-                <User className="w-4 h-4 mr-2" />
-                {loading
-                    ? "Setting..."
-                    : success
-                    ? "Set!"
-                    : "Set as Profile Picture"}
-            </Button>
-            <LikeButton imageUrl={imageUrl} initialLiked={initialLiked} />
-            {error && (
-                <span className="ml-2 text-red-400 text-xs">{error}</span>
-            )}
+        <div className="w-full px-2 pb-2">
+            <div className="flex flex-col gap-3 w-full">
+                <Button
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-medium py-2.5 w-full"
+                    onClick={handleSetProfilePicture}
+                    disabled={loading}
+                >
+                    <User className="w-4 h-4 mr-2" />
+                    {loading
+                        ? "Setting..."
+                        : success
+                        ? "Set!"
+                        : "Set as Profile Picture"}
+                </Button>
+                <LikeButton imageUrl={imageUrl} initialLiked={initialLiked} />
+                {error && (
+                    <span className="ml-2 text-red-400 text-xs">{error}</span>
+                )}
+            </div>
         </div>
     );
 }

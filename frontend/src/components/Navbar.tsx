@@ -18,7 +18,7 @@ export default function Navbar() {
         },
         {
             name: "Liked Images",
-            href: "/liked",
+            href: "/liked-images",
             icon: Heart,
         },
     ];

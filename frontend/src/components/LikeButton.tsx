@@ -63,7 +63,7 @@ export default function LikeButton({
                 (liked
                     ? "border-pink-500 bg-pink-600 text-white hover:bg-pink-700 hover:border-pink-600"
                     : "border-white/30 text-white bg-white/10 hover:bg-white/20 hover:text-white") +
-                " flex-1 min-w-[160px] max-w-full"
+                " w-full transition-all duration-200"
             }
             onClick={handleLike}
             disabled={loading}
