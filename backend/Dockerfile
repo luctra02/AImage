@@ -17,8 +17,8 @@ RUN ./gradlew dependencies --no-daemon
 # Copy source code
 COPY src src
 
-# Build the application
-RUN ./gradlew build --no-daemon
+# Build the application (skip tests for production build)
+RUN ./gradlew build -x test --no-daemon
 
 # Create a non-root user
 RUN addgroup --system javauser && adduser --system --ingroup javauser javauser
