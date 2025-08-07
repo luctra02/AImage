@@ -38,7 +38,10 @@ class SecurityConfig(
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("http://localhost:3000")
+        configuration.allowedOrigins = listOf(
+            "http://localhost:3000",
+            "https://a-image-ruby.vercel.app"
+        )
         configuration.allowedMethods = listOf("GET", "POST", "DELETE", "PUT", "OPTIONS")
         configuration.allowedHeaders = listOf("*")
         configuration.allowCredentials = true

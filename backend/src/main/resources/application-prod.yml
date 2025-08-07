@@ -1,0 +1,22 @@
+spring:
+    datasource:
+        url: ${DATABASE_URL}
+        driver-class-name: org.postgresql.Driver
+    jpa:
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+                format_sql: true
+    security:
+        jwt:
+            secret: ${JWT_SECRET}
+
+server:
+    port: 8080
+
+logging:
+    level:
+        com.luctra.aimage_backend: INFO
+        org.springframework.security: INFO

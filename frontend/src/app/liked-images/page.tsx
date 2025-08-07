@@ -26,8 +26,9 @@ export default function LikedImagesPage() {
             setLoading(true);
             setError(null);
             try {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
                 const res = await fetch(
-                    "http://localhost:8080/api/liked-images",
+                    `${apiUrl}/api/liked-images`,
                     {
                         credentials: "include",
                     }

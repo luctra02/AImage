@@ -20,8 +20,9 @@ export default function AuthButton() {
     useEffect(() => {
         const checkAuthStatus = async () => {
             try {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
                 const response = await fetch(
-                    "http://localhost:8080/api/user/profile",
+                    `${apiUrl}/api/user/profile`,
                     {
                         credentials: "include",
                     }
@@ -59,7 +60,8 @@ export default function AuthButton() {
 
     const handleLogout = async () => {
         try {
-            await fetch("http://localhost:8080/api/auth/logout", {
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+            await fetch(`${apiUrl}/api/auth/logout`, {
                 method: "POST",
                 credentials: "include",
             });
