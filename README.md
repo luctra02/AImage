@@ -43,7 +43,7 @@ AImage er en AI-drevet bildegenereringsapplikasjon som lar brukere skape unike v
 
 -   **Frontend**: Next.js 14 (TypeScript), Tailwind CSS
 -   **Backend**: Spring Boot (Kotlin), JPA/Hibernate
--   **Database**: H2 Database (utvikling), PostgreSQL (produksjon)
+-   **Database**: PostgreSQL (NeonDB)
 -   **Autentisering**: JWT (JSON Web Tokens)
 -   **State Management**: Zustand
 -   **UI-komponenter**: shadcn/ui komponenter
@@ -83,6 +83,42 @@ AImage/
 │   └── package.json       # Node.js dependencies
 └── README.md              # Prosjektdokumentasjon
 ```
+
+## Deployment
+
+### 🌐 Frontend - Vercel
+
+**URL**: [https://a-image-ruby.vercel.app](https://a-image-ruby.vercel.app)
+
+**Teknologi**: Next.js 14 med TypeScript
+
+**Deployment Prosess**:
+1. Koble GitHub repository til Vercel
+2. Konfigurer build-innstillinger for Next.js
+3. Sett miljøvariabler:
+   - `NEXT_PUBLIC_API_URL`: Backend API URL
+4. Automatiske deployments ved push til main branch
+
+### 🔧 Backend - Render
+
+**Teknologi**: Spring Boot (Kotlin) med Docker
+
+**Deployment Prosess**:
+1. Koble GitHub repository til Render
+2. Konfigurer som Web Service med Docker-miljø
+3. Sett miljøvariabler:
+   - `SPRING_PROFILES_ACTIVE`: `prod`
+   - `DATABASE_URL`: NeonDB tilkoblingsstreng
+   - `JWT_SECRET`: Sikker JWT-signering
+   - `PORT`: `8080` (Render vil overskrive)
+
+
+
+### 🗄️ Database - NeonDB
+
+**Teknologi**: PostgreSQL
+
+**Tilkobling**: JDBC-format for Spring Boot integrasjon
 
 ## Funksjoner i detalj
 
